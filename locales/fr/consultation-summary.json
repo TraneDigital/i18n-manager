@@ -1,0 +1,20 @@
+{
+	"ConsultationSummary": "Résumé de la consultation",
+	"CreateNewConsultationSummary": "",
+	"CreateConsultationSummary": "",
+	"CreatedSuccessfully": "",
+	"EditConsultationSummary": "",
+	"EditedSuccessfully": "",
+	"Don'tShow": "Ne pas montrer",
+	"Show": "Montrer",
+	"WhereWeGoFromHere": "Où nous allons d’ici",
+	"WhereWeHaveBeen": "Où nous avons été",
+	"error": {
+		"AccessDenied": "",
+		"NotFound": "",
+		"SelectDifferentConsultationSummary": ""
+	},
+	"VisibleToCustomer": "",
+	"NotVisibleToCustomer": "",
+	"LimitNote": ""
+}
