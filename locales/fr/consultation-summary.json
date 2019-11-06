@@ -1,11 +1,22 @@
 {
+	"Buildings": "FRFRFRFR",
+	"ConsultationName": "",
 	"ConsultationSummary": "Résumé de la consultation",
+	"ConsultationSummaryList": "",
+	"ConsultationSummaryName": "",
 	"CreateNewConsultationSummary": "",
 	"CreateConsultationSummary": "",
 	"CreatedSuccessfully": "",
 	"EditConsultationSummary": "",
 	"EditedSuccessfully": "",
+	"CopyConsultationSummary": "",
+	"DeleteConsultationSummary": "",
+	"DeleteConfirmation": "",
+	"DeletedSuccessfully": "",
+	"DeletedUnsuccessfully": "",
 	"Don'tShow": "Ne pas montrer",
+	"FindConsultationSummary": "",
+	"OrganizationName": "",
 	"Show": "Montrer",
 	"WhereWeGoFromHere": "Où nous allons d’ici",
 	"WhereWeHaveBeen": "Où nous avons été",
@@ -16,5 +27,10 @@
 	},
 	"VisibleToCustomer": "",
 	"NotVisibleToCustomer": "",
-	"LimitNote": ""
+	"LimitNote": "",
+	"NoConsultationSummary": "",
+	"ClickToCreate": "",
+	"status": {
+		"draft": ""
+	}
 }

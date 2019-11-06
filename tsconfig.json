@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "module": "CommonJS",
+    "declaration": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*", "@types/*"]
+    },
+    "esModuleInterop": true,
+    "inlineSources": true,
+    "resolveJsonModule": true,
+    "outDir": "./lib",
+    "strict": true
+  },
+  "exclude": ["node_modules"]
+}
