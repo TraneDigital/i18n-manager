@@ -1,5 +1,5 @@
 {
-  "name": "exceltest",
+  "name": "i18next-manager",
   "version": "1.0.0",
   "description": "",
   "main": "./lib/index.js",
@@ -11,6 +11,7 @@
   "author": "Bohdan Heptinh",
   "license": "ISC",
   "dependencies": {
+    "commander": "^4.0.0",
     "exceljs": "^3.3.1"
   },
   "devDependencies": {
@@ -26,6 +27,6 @@
     "exec": "node --inspect=0.0.0.0:9229 --require ts-node/register index.ts"
   },
   "bin": {
-    "excel": "./lib/index.js"
+    "excel": "./lib/cli.js"
   }
 }
