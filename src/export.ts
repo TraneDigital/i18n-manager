@@ -5,7 +5,6 @@ import { removeDuplicates } from "./helpers";
 import { separator } from "./constants";
 
 
-
 function setTranslationData(translationObj: any, translations: any, lang: string): void {
     Object.entries(translations).forEach(([langKey, trans]) => {
         translationObj[langKey] = translationObj[langKey] || {};
@@ -21,7 +20,6 @@ function setTranslationData(translationObj: any, translations: any, lang: string
         }
     })
 }
-
 function getTranslationData(data: any): any {
     let translationData = {};
 
@@ -31,8 +29,6 @@ function getTranslationData(data: any): any {
 
     return translationData;
 }
-
-
 function worksheetAddRow(value: any, key: string | null, worksheet: Worksheet) {
     delete value.nested;
 
@@ -58,10 +54,18 @@ export default function (outputPath: string, translationsPath: string): void {
 
     const languages: string[] = fs.readdirSync(translationsPath)
 
-    const allFiles = languages.reduce((acc: string[], lang: string) => ([
-        ...acc,
-        ...fs.readdirSync(path.join(translationsPath, lang)),
-    ]), [])
+    const allFiles = languages.reduce((acc: string[], lang: string) => {
+        const filePath = path.join(translationsPath, lang)
+
+        if (!fs.existsSync(filePath)) {
+            return acc
+        }
+
+        return [
+            ...acc,
+            ...fs.readdirSync(filePath),
+        ]
+    }, [])
     const files = removeDuplicates<string>(allFiles).sort()
 
 
@@ -76,7 +80,8 @@ export default function (outputPath: string, translationsPath: string): void {
         languages.forEach(lang => {
             columns.push({ header: lang, key: lang, width: 65 });
 
-            const rawJsonData = fs.readFileSync(path.join(translationsPath, lang, file), 'utf8');
+            const filePath = path.join(translationsPath, lang)
+            const rawJsonData = fs.existsSync(filePath) ? fs.readFileSync(path.join(translationsPath, lang, file), 'utf8');
             langData[lang] = JSON.parse(rawJsonData);
         });
 

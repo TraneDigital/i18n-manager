@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import program from "commander"
 import { programValidate } from "./src/helpers"
 import importTranslations from "./src/import"
