@@ -1,4 +1,5 @@
 import program from "commander"
+import { programValidate } from "./src/helpers"
 import importTranslations from "./src/import"
 import exportTranslations from "./src/export"
 
@@ -10,27 +11,9 @@ program
     .option('-t, --translations <translations-path>', 'Path to translation directory')
     .option('-o, --output <output-path>', 'Path to output excel file')
 
+
 program.parse(process.argv)
-
-
-
-// validation
-if (!program.import && !program.export) {
-    console.error('Import/Export command missing');
-    process.exit(1);
-}
-if (program.import && program.export) {
-    console.error("Can't choose both Import and Export");
-    process.exit(1);
-}
-if (!program.translations) {
-    console.error('Path to translation directory is missing');
-    process.exit(1);
-}
-if (!program.output) {
-    console.error('Path to output excel file is missing');
-    process.exit(1);
-}
+programValidate(program)
 
 
 
