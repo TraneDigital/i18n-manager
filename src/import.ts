@@ -1,11 +1,15 @@
 import * as path from "path";
 import * as fs from "fs";
 import { Workbook, Worksheet } from "exceljs";
-import { assign } from "./helpers";
+import { assign, throwError } from "./helpers";
 import { separator } from "./constants";
 
 export default function (outputPath: string, translationsPath: string): void {
     const workbook = new Workbook();
+
+    if (!fs.existsSync(outputPath)) {
+        throwError("Wrong path to output excel file")
+    }
 
     workbook.xlsx.readFile(outputPath)
         .then((workbook: Workbook) => {

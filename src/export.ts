@@ -1,5 +1,6 @@
 import * as path from "path";
 import * as fs from "fs";
+import shelljs from "shelljs";
 import { Workbook, Worksheet } from "exceljs";
 import { removeDuplicates } from "./helpers";
 import { separator } from "./constants";
@@ -80,8 +81,8 @@ export default function (outputPath: string, translationsPath: string): void {
         languages.forEach(lang => {
             columns.push({ header: lang, key: lang, width: 65 });
 
-            const filePath = path.join(translationsPath, lang)
-            const rawJsonData = fs.existsSync(filePath) ? fs.readFileSync(path.join(translationsPath, lang, file), 'utf8');
+            const filePath = path.join(translationsPath, lang, file)
+            const rawJsonData = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : "{}";
             langData[lang] = JSON.parse(rawJsonData);
         });
 
@@ -92,10 +93,9 @@ export default function (outputPath: string, translationsPath: string): void {
         worksheetAddRow(translationData, null, worksheet);
     });
 
-
+    shelljs.mkdir('-p', path.dirname(outputPath))
     workbook.xlsx.writeFile(outputPath)
         .then(workbook => {
             // use workbook
-            console.log(workbook);
-        });
+        })
 }

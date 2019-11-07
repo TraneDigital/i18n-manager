@@ -1,6 +1,6 @@
 import { CommanderStatic } from "commander"
 
-function throwError(message: string) {
+export function throwError(message: string) {
     console.error(`Error: ${message}`)
     process.exit(1)
 }
