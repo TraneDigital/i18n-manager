@@ -8,9 +8,9 @@
     "baseUrl": ".",
     "esModuleInterop": true,
     "inlineSources": true,
-    "resolveJsonModule": true,
     "outDir": "./lib",
     "strict": true
   },
+  "include": ["./src"],
   "exclude": ["node_modules", "./lib"]
 }

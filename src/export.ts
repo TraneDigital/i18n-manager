@@ -1,10 +1,10 @@
-import * as path from "path";
-import * as fs from "fs";
-import shelljs from "shelljs";
-import { Workbook, Worksheet } from "exceljs";
-import { removeDuplicates } from "./helpers";
-import { separator } from "./constants";
+import * as path from "path"
+import * as fs from "fs"
+import { Workbook, Worksheet } from "exceljs"
+import { removeDuplicates } from "./helpers"
+import { separator } from "./constants"
 
+const pkg = require('../package.json')
 
 function setTranslationData(translationObj: any, translations: any, lang: string): void {
     Object.entries(translations).forEach(([langKey, trans]) => {
@@ -30,31 +30,23 @@ function getTranslationData(data: any): any {
 
     return translationData;
 }
-function worksheetAddRow(value: any, key: string | null, worksheet: Worksheet) {
+function worksheetAddRow(value: any, key: string | null, worksheet: Worksheet, file: string) {
     delete value.nested;
 
     Object.entries(value).forEach(([nestedKey, nestedValue]: [string, any]) => {
         const newKey = key ? `${key}${separator}${nestedKey}` : nestedKey;
         if (nestedValue.nested) {
-            worksheetAddRow(nestedValue, newKey, worksheet);
+            worksheetAddRow(nestedValue, newKey, worksheet, file);
         } else {
             worksheet.addRow({
+                file,
                 key: newKey,
                 ...nestedValue,
             });
         }
     });
 }
-
-
-export default function (outputPath: string, translationsPath: string): void {
-    const workbook = new Workbook()
-    // todo: get creator from config or package.json
-    workbook.creator = 'i18next-manager'
-    workbook.created = new Date()
-
-    const languages: string[] = fs.readdirSync(translationsPath)
-
+function getAllFiles(translationsPath: string, languages: string[]): string[] {
     const allFiles = languages.reduce((acc: string[], lang: string) => {
         const filePath = path.join(translationsPath, lang)
 
@@ -67,33 +59,52 @@ export default function (outputPath: string, translationsPath: string): void {
             ...fs.readdirSync(filePath),
         ]
     }, [])
-    const files = removeDuplicates<string>(allFiles).sort()
 
+    return removeDuplicates<string>(allFiles).sort()
+}
+function getWorksheetColumns(languages: string[]) {
+    const columns = [
+        { header: 'File', key: 'file', width: 30 },
+        { header: 'Translation ID', key: 'key', width: 50 },
+    ]
+
+    languages.forEach(lang => {
+        columns.push({ header: lang, key: lang, width: 65 });
+    })
+
+    return columns
+}
+
+
+export default function (outputPath: string, translationsPath: string): void {
+    const languages: string[] = fs.readdirSync(translationsPath)
+    const files = getAllFiles(translationsPath, languages)
+
+    const workbook = new Workbook()
+    workbook.creator = pkg.name
+    workbook.lastModifiedBy = pkg.name
+    workbook.created = new Date()
+    workbook.modified = new Date()
+
+    const worksheet = workbook.addWorksheet("Translations", {
+        views:[{ state: 'frozen', xSplit: 1, ySplit: 1 }],
+    });
+    worksheet.autoFilter = 'A';
+    worksheet.columns = getWorksheetColumns(languages)
 
     files.forEach((file: string) => {
-        const worksheet = workbook.addWorksheet(file, {views:[{state: 'frozen', xSplit: 1, ySplit: 1}]});
         const langData: any = {};
 
-        const columns = [
-            { header: 'Key', key: 'key', width: 50 },
-        ];
-
         languages.forEach(lang => {
-            columns.push({ header: lang, key: lang, width: 65 });
-
             const filePath = path.join(translationsPath, lang, file)
-            const rawJsonData = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : "{}";
+            const rawJsonData = fs.existsSync(filePath) ? fs.readFileSync(filePath, "utf8") : "{}";
             langData[lang] = JSON.parse(rawJsonData);
         });
 
-        worksheet.columns = columns;
-
         const translationData = getTranslationData(langData);
-
-        worksheetAddRow(translationData, null, worksheet);
+        worksheetAddRow(translationData, null, worksheet, file);
     });
 
-    shelljs.mkdir('-p', path.dirname(outputPath))
     workbook.xlsx.writeFile(outputPath)
         .then(workbook => {
             // use workbook

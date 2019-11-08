@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
 import program from "commander"
-import { programValidate } from "./src/helpers"
-import importTranslations from "./src/import"
-import exportTranslations from "./src/export"
+import { programValidate } from "./helpers"
+import importTranslations from "./import"
+import exportTranslations from "./export"
 
 program
     // todo: get version from config or package.json
