@@ -1,8 +1,8 @@
 import * as path from "path"
 import * as fs from "fs"
-import { Workbook, Worksheet } from "exceljs"
+import { Workbook, Worksheet, Cell } from "exceljs"
 import { removeDuplicates } from "./helpers"
-import { separator } from "./constants"
+import { separator, mainColumns, worksheetName } from "./constants"
 
 const pkg = require('../package.json')
 
@@ -64,8 +64,8 @@ function getAllFiles(translationsPath: string, languages: string[]): string[] {
 }
 function getWorksheetColumns(languages: string[]) {
     const columns = [
-        { header: 'File', key: 'file', width: 30 },
-        { header: 'Translation ID', key: 'key', width: 50 },
+        { ...mainColumns.file, width: 25 },
+        { ...mainColumns.key, width: 50 },
     ]
 
     languages.forEach(lang => {
@@ -86,7 +86,7 @@ export default function (outputPath: string, translationsPath: string): void {
     workbook.created = new Date()
     workbook.modified = new Date()
 
-    const worksheet = workbook.addWorksheet("Translations", {
+    const worksheet = workbook.addWorksheet(worksheetName, {
         views:[{ state: 'frozen', xSplit: 1, ySplit: 1 }],
     });
     worksheet.autoFilter = 'A';
@@ -105,8 +105,24 @@ export default function (outputPath: string, translationsPath: string): void {
         worksheetAddRow(translationData, null, worksheet, file);
     });
 
-    workbook.xlsx.writeFile(outputPath)
-        .then(workbook => {
-            // use workbook
+    // Make table header text bold
+    worksheet.getRow(1).eachCell((cell: Cell) => {
+        cell.font = {
+            bold: true,
+        };
+    })
+
+    // Add text wrap to cells
+    languages.forEach((lang: string) => {
+        worksheet.getColumn(lang).eachCell((cell: Cell) => {
+            cell.alignment = {
+                wrapText: true,
+                vertical: "top",
+                horizontal: "left",
+            }
         })
+    })
+
+    workbook.xlsx.writeFile(outputPath)
+        .then(() => console.log("Completed"))
 }
