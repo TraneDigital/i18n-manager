@@ -28,7 +28,7 @@
     "typescript": "^3.7.2"
   },
   "bin": {
-    "i18next-manager": "./lib/index.js"
+    "i18n-manager": "./lib/index.js"
   },
   "repository": {
     "type": "git",

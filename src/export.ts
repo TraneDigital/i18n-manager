@@ -69,7 +69,7 @@ function getAllFiles(translationsPath: string, languages: string[]): string[] {
 }
 function getWorksheetColumns(languages: string[]): Partial<Column>[] {
     const columns = [
-        { ...mainColumns.file, width: 25 },
+        { ...mainColumns.file, width: 19 },
         { ...mainColumns.key, width: 50 },
     ]
 
@@ -92,7 +92,7 @@ export default function (outputPath: string, translationsPath: string): void {
     workbook.modified = new Date()
 
     const worksheet = workbook.addWorksheet(worksheetName, {
-        views:[{ state: 'frozen', xSplit: 1, ySplit: 1 }],
+        views:[{ state: 'frozen', xSplit: 2, ySplit: 1 }],
     })
     worksheet.autoFilter = 'A'
     worksheet.columns = getWorksheetColumns(languages)
@@ -110,13 +110,6 @@ export default function (outputPath: string, translationsPath: string): void {
         worksheetAddRow(translationData, null, worksheet, file)
     })
 
-    // Make table header text bold
-    worksheet.getRow(1).eachCell((cell: Cell) => {
-        cell.font = {
-            bold: true,
-        }
-    })
-
     // Add text wrap to cells
     languages.forEach((lang: string) => {
         worksheet.getColumn(lang).eachCell((cell: Cell) => {
@@ -126,6 +119,19 @@ export default function (outputPath: string, translationsPath: string): void {
                 horizontal: "left",
             }
         })
+    })
+
+    // Make table header text bold
+    const headRow = worksheet.getRow(1)
+    headRow.height = 19
+    headRow.eachCell((cell: Cell) => {
+        cell.font = {
+            bold: true,
+        }
+        cell.alignment = {
+            vertical: "middle",
+            horizontal: "center",
+        }
     })
 
     workbook.xlsx.writeFile(outputPath)
