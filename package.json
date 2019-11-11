@@ -1,12 +1,10 @@
 {
-  "name": "i18next-manager",
+  "name": "i18n-manager",
   "version": "1.0.0",
-  "description": "Import/Export capability for i18next translation files",
+  "description": "Import/Export capability for i18n translation files",
   "main": "./lib/index.js",
   "scripts": {
     "start": "tsc --watch",
-    "dev:import": "ts-node src/index.ts -i -t ./locales/ -o ./i18next-assets/Import.xlsx",
-    "dev:export": "ts-node src/index.ts -e -t ./locales/ -o ./i18next-assets/Export.xlsx",
     "build": "tsc --build",
     "lint": "eslint --ext \"ts\" -c ./.eslintrc.json ./",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -32,10 +30,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bheptinh/i18next-manager.git"
+    "url": "git+https://github.com/TraneDigital/i18n-manager.git"
   },
   "bugs": {
-    "url": "https://github.com/bheptinh/i18next-manager/issues"
+    "url": "https://github.com/TraneDigital/i18n-manager/issues"
   },
-  "homepage": "https://github.com/bheptinh/i18next-manager#readme"
+  "homepage": "https://github.com/TraneDigital/i18n-manager#readme"
 }
