@@ -16,5 +16,7 @@
 	},
 	"root": true,
 	"rules": {
+		"semi": "off",
+		"@typescript-eslint/semi": ["error", "never"]
 	}
 }

@@ -8,6 +8,7 @@
     "dev:import": "ts-node src/index.ts -i -t ./locales/ -o ./i18next-assets/Import.xlsx",
     "dev:export": "ts-node src/index.ts -e -t ./locales/ -o ./i18next-assets/Export.xlsx",
     "build": "tsc --build",
+    "lint": "eslint --ext \"ts\" -c ./.eslintrc.json ./",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Bohdan Heptinh",
@@ -15,6 +16,7 @@
   "dependencies": {
     "commander": "^4.0.0",
     "exceljs": "^3.3.1",
+    "lodash": "^4.17.15",
     "shelljs": "^0.8.3"
   },
   "devDependencies": {
@@ -35,5 +37,5 @@
   "bugs": {
     "url": "https://github.com/bheptinh/i18next-manager/issues"
   },
-  "homepage":"https://github.com/bheptinh/i18next-manager#readme"
+  "homepage": "https://github.com/bheptinh/i18next-manager#readme"
 }

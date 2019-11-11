@@ -1,4 +1,8 @@
 import { CommanderStatic } from "commander";
-export declare function assign(obj: any, keyPath: any[], value: any): void;
-export declare function removeDuplicates<T>(array: T[]): T[];
-export declare function programValidate(program: CommanderStatic): void;
+export declare function prettifyJson<T>(object: T): string;
+/**
+ * Validate input options
+ * if not valid exit with code 1
+ * @param {CommanderStatic} program
+ */
+export declare function programValidate(program: CommanderStatic): Promise<void>;

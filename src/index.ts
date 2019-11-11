@@ -5,26 +5,26 @@ import { programValidate } from "./helpers"
 import importTranslations from "./import"
 import exportTranslations from "./export"
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../package.json')
+
 program
-    // todo: get version from config or package.json
-    .version("0.0.1", '-v, --version', 'Output the current version')
-    .option('-i, --import', 'Import translations from excel')
-    .option('-e, --export', 'Export translations to excel')
-    .option('-t, --translations <translations-path>', 'Path to translation directory')
-    .option('-o, --output <output-path>', 'Path to output excel file')
+    .version(pkg.version, "-v, --version", "Output the current version")
+    .option("-i, --import", "Import translations from excel")
+    .option("-e, --export", "Export translations to excel")
+    .requiredOption("-t, --translations <translations-path>", "Path to translation directory")
+    .requiredOption("-o, --output <output-path>", "Path to output excel file")
 
 
 program.parse(process.argv)
 programValidate(program)
 
 
-
 // script execution
 if (program.import) {
-    importTranslations(program.output, program.translations);
+    importTranslations(program.output, program.translations)
 }
-
 if (program.export) {
-    exportTranslations(program.output, program.translations);
+    exportTranslations(program.output, program.translations)
 }
 

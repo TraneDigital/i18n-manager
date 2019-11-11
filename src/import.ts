@@ -1,70 +1,59 @@
-import * as path from "path";
-import * as fs from "fs";
-import { Workbook, Worksheet } from "exceljs";
-import { assign } from "./helpers";
-import { separator, mainColumns, worksheetName } from "./constants";
+import * as path from "path"
+import * as fs from "fs"
+import { Workbook, Worksheet, Column } from "exceljs"
+import { set } from "lodash"
+import { prettifyJson } from "./helpers"
+import { separator, mainColumns, worksheetName } from "./constants"
+import { Translations } from "../types"
 
 export default function (outputPath: string, translationsPath: string): void {
-    const workbook = new Workbook();
+    const workbook = new Workbook()
 
     workbook.xlsx.readFile(outputPath)
         .then((workbook: Workbook) => {
             const worksheet: Worksheet = workbook.worksheets.find(w => w.name === worksheetName) || workbook.worksheets[0]
 
-            worksheet.eachRow(function(row, rowNumber) {
-                console.log('Row ' + rowNumber + ' = ' + JSON.stringify(row.values));
-            });
+            const translations: Translations = {}
+            const filenames = worksheet.columns[0].values as string[] || []
+            const translationKeys = worksheet.columns[1].values as string[] || []
 
+            // iterate through columns
+            // todo: probably it could be faster if iterate through rows
+            worksheet.columns.forEach((column: Partial<Column>) => {
+                const values = column.values || []
+                const header = values ? values[1] as string : ""
 
-            /*const translations: any = {};
-            let translationKeys: any[] = [];
-
-            worksheet.columns.forEach((column: any) => {
-                const header = column.values[1];
-
-                if (header === mainColumns.file.header) {
-
-                } else if (header === mainColumns.key.header) {
-                    translationKeys = column.values
-                } else {
-                    translations[header] = translationKeys.reduce((acc, i, idx) => {
-                        if (idx < 2) {
-                            return acc;
-                        }
-
-                        column.values = column.values || {};
-
-                        const value = column.values[idx] || "";
-
-                        if (i.includes(separator)) {
-                            const keys = i.split(separator);
-                            assign(acc, keys, value);
-                            return acc;
-                        }
-
-                        return {
-                            ...acc,
-                            [i]: value,
-                        }
-                    }, {})
+                if (header === mainColumns.file.header || header === mainColumns.key.header) {
+                    return
                 }
-            });
 
-            console.log(translations);*/
+                translations[header] = translationKeys.reduce((acc, i, idx) => {
+                    // first row is header
+                    if (idx > 1) {
+                        const value = values[idx] || ""
 
+                        const path: string[] = [
+                            filenames[idx],
+                            ...(i.includes(separator) ? i.split(separator) : [i])
+                        ]
 
-            /*Object.entries(translations).forEach(([lang, translations]) => {
-                fs.writeFileSync(
-                    path.join(translationsPath, lang, worksheet.name),
-                    JSON.stringify(translations, null, "\t") + "\n"
-                );
-            })*/
+                        set(acc, path, value)
+                    }
 
-
-            workbook.worksheets.forEach((worksheet: Worksheet) => {
-
+                    return acc
+                }, {})
             })
 
-        });
+            Object.entries(translations).forEach(([lang, values]) => {
+                Object.entries(values).forEach(([filename, translations]) => {
+                    fs.writeFileSync(
+                        path.join(translationsPath, lang, filename),
+                        prettifyJson(translations),
+                    )
+                })
+            })
+
+            console.log("Completed")
+        })
 }
 
