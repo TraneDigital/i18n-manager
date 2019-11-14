@@ -12,8 +12,8 @@ program
     .version(pkg.version, "-v, --version", "Output the current version")
     .option("-i, --import", "Import translations from excel")
     .option("-e, --export", "Export translations to excel")
-    .requiredOption("--translation-assets-dir <translations-path>", "Path to translation directory")
-    .requiredOption("--translation-file <translation-file-path>", "Path to excel file")
+    .requiredOption("-foo, --translation-assets-dir <translations-path>", "Path to translation directory")
+    .requiredOption("-bar, --translation-file <translation-file-path>", "Path to excel file")
 
 
 program.parse(process.argv)
@@ -21,10 +21,10 @@ programValidate(program)
     .then(() => {
         // script execution
         if (program.import) {
-            importTranslations(program.output, program.translations)
+            importTranslations(program.translationFile, program.translationAssetsDir)
         }
         if (program.export) {
-            exportTranslations(program.output, program.translations)
+            exportTranslations(program.translationFile, program.translationAssetsDir)
         }
     })
 

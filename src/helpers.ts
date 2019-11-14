@@ -24,13 +24,13 @@ export async function programValidate(program: CommanderStatic): Promise<void> {
         throwError("Can't choose both Import and Export")
     }
 
-    // Check if path exist for translations option
-    if (!shelljs.test('-e', program.translations)) {
+    // Check if path exist for translation-assets-dir option
+    if (!shelljs.test('-e', program.translationAssetsDir)) {
         throwError("Wrong path to locales directory")
     }
 
-    // Check if path exist for output option
-    if (!shelljs.test('-e', program.output)) {
+    // Check if path exist for translation-file option
+    if (!shelljs.test('-e', program.translationFile)) {
         if (program.import) {
             // throw an error if we want to import translations
             // from excel file
@@ -38,7 +38,7 @@ export async function programValidate(program: CommanderStatic): Promise<void> {
         } else {
             // create directories if we want to export
             // translations to excel file
-            await shelljs.mkdir('-p', path.dirname(program.output))
+            await shelljs.mkdir('-p', path.dirname(program.translationFile))
         }
     }
 }
