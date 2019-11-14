@@ -12,8 +12,8 @@ program
     .version(pkg.version, "-v, --version", "Output the current version")
     .option("-i, --import", "Import translations from excel")
     .option("-e, --export", "Export translations to excel")
-    .requiredOption("-foo, --translation-assets-dir <translations-path>", "Path to translation directory")
-    .requiredOption("-bar, --translation-file <translation-file-path>", "Path to excel file")
+    .requiredOption("--translation-assets-dir <translations-path>", "Path to translation directory")
+    .requiredOption("--translation-file <translation-file-path>", "Path to excel file")
 
 
 program.parse(process.argv)
