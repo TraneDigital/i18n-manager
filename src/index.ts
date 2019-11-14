@@ -10,10 +10,10 @@ const pkg = require('../package.json')
 
 program
     .version(pkg.version, "-v, --version", "Output the current version")
-    .option("-i, --import", "Import translations from excel")
-    .option("-e, --export", "Export translations to excel")
-    .requiredOption("--translation-assets-dir <translations-path>", "Path to translation directory")
-    .requiredOption("--translation-file <translation-file-path>", "Path to excel file")
+    .option("-i, --import", "Import translations from excel file")
+    .option("-e, --export", "Export translations to excel file")
+    .requiredOption("--translation-assets-dir <i18n-trans-path>", "Path to translation directory")
+    .requiredOption("--translation-file <xls-file-path>", "Path to excel file")
 
 
 program.parse(process.argv)
