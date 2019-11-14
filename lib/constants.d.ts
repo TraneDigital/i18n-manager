@@ -1,3 +1,4 @@
+import { Style } from "exceljs";
 export declare const separator = "::";
 export declare const worksheetName = "Translations";
 export declare const mainColumns: {
@@ -9,4 +10,7 @@ export declare const mainColumns: {
         header: string;
         key: string;
     };
+};
+export declare const defaultColumnStyles: {
+    style: Partial<Style>;
 };

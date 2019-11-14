@@ -1,12 +1,10 @@
 import * as path from "path"
 import * as fs from "fs"
-import { Workbook, Worksheet, Cell, Column } from "exceljs"
+import { Workbook, Worksheet, Column } from "exceljs"
 import { uniq } from "lodash"
-import { separator, mainColumns, worksheetName } from "./constants"
+import { separator, mainColumns, worksheetName, defaultColumnStyles } from "./constants"
+import { getAuthor } from "./helpers"
 import { Translations, Translation } from "../types"
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('../package.json')
 
 function setTranslationData(translationObj: Translations, translations: Translations | Translation, lang: string): void {
     Object.entries(translations).forEach(([langKey, trans]) => {
@@ -69,12 +67,12 @@ function getAllFiles(translationsPath: string, languages: string[]): string[] {
 }
 function getWorksheetColumns(languages: string[]): Partial<Column>[] {
     const columns = [
-        { ...mainColumns.file, width: 19 },
-        { ...mainColumns.key, width: 50 },
+        { ...mainColumns.file, ...defaultColumnStyles, width: 19 },
+        { ...mainColumns.key, ...defaultColumnStyles, width: 50 },
     ]
 
     languages.forEach(lang => {
-        columns.push({ header: lang, key: lang, width: 65 })
+        columns.push({ header: lang, key: lang, ...defaultColumnStyles, width: 65 })
     })
 
     return columns
@@ -84,15 +82,20 @@ function getWorksheetColumns(languages: string[]): Partial<Column>[] {
 export default function (outputPath: string, translationsPath: string): void {
     const languages: string[] = fs.readdirSync(translationsPath)
     const files = getAllFiles(translationsPath, languages)
+    const author = getAuthor()
 
     const workbook = new Workbook()
-    workbook.creator = pkg.name
-    workbook.lastModifiedBy = pkg.name
+    workbook.creator = author
+    workbook.lastModifiedBy = author
     workbook.created = new Date()
     workbook.modified = new Date()
 
     const worksheet = workbook.addWorksheet(worksheetName, {
-        views:[{ state: 'frozen', xSplit: 2, ySplit: 1 }],
+        views:[{
+            state: 'frozen',
+            xSplit: 2,
+            ySplit: 1,
+        }],
     })
     worksheet.autoFilter = 'A'
     worksheet.columns = getWorksheetColumns(languages)
@@ -112,27 +115,26 @@ export default function (outputPath: string, translationsPath: string): void {
 
     // Add text wrap to cells
     languages.forEach((lang: string) => {
-        worksheet.getColumn(lang).eachCell((cell: Cell) => {
-            cell.alignment = {
-                wrapText: true,
-                vertical: "top",
-                horizontal: "left",
-            }
-        })
+        const column = worksheet.getColumn(lang)
+        column.alignment = {
+            ...column.alignment,
+            wrapText: true,
+        }
     })
 
     // Make table header text bold
     const headRow = worksheet.getRow(1)
     headRow.height = 19
-    headRow.eachCell((cell: Cell) => {
-        cell.font = {
-            bold: true,
-        }
-        cell.alignment = {
-            vertical: "middle",
-            horizontal: "center",
-        }
-    })
+    headRow.font = {
+        ...headRow.font,
+        bold: true,
+    }
+    headRow.alignment = {
+        ...headRow.alignment,
+        wrapText: false,
+        vertical: "middle",
+        horizontal: "center",
+    }
 
     workbook.xlsx.writeFile(outputPath)
         .then(() => console.log("Completed"))

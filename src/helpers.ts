@@ -2,6 +2,9 @@ import * as path from "path"
 import { CommanderStatic } from "commander"
 import shelljs from "shelljs"
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const pkg = require('../package.json')
+
 function throwError(message: string): void {
     console.error(`Error: ${message}`)
     process.exit(1)
@@ -9,6 +12,20 @@ function throwError(message: string): void {
 
 export function prettifyJson<T>(object: T): string {
     return JSON.stringify(object, null, "\t") + "\n"
+}
+
+export function getAuthor(): string {
+    if (shelljs.which('git')) {
+        const { stdout: gitName } = shelljs.exec('git config user.name', { silent: true })
+        const { stdout: gitGlobalName } = shelljs.exec('git config --global user.name', { silent: true })
+        const author = (gitName || gitGlobalName).replace("\n", "")
+
+        if (author) {
+            return `${author} (${pkg.name})`
+        }
+    }
+
+    return pkg.name
 }
 
 /**

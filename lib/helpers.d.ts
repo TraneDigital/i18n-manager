@@ -1,5 +1,6 @@
 import { CommanderStatic } from "commander";
 export declare function prettifyJson<T>(object: T): string;
+export declare function getAuthor(): string;
 /**
  * Validate input options
  * if not valid exit with code 1
